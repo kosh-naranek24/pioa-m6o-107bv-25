@@ -1,0 +1,15 @@
+
+__pycache__/
+
+*.py[cod]
+
+.venv/
+
+.pytest_cache/
+
+pioa_task1/.idea/
+pioa_task1/.vscode/
+
+# Корневые папки IDE
+.idea/
+.vscode/
