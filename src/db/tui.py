@@ -6,7 +6,6 @@ from src.db.backend.errors import (
     TableAlreadyExistsError,
     MissingColumnError,
     UnknownColumnError,
-    InvalidStorageDataError,
 )
 
 
@@ -33,7 +32,6 @@ class TUI:
 
         self.current_table = "students"
         self._init_students_table()
-        self.run()
 
     def _init_students_table(self) -> None:
         """Инициализация таблицы students."""
@@ -177,7 +175,6 @@ class TUI:
             return
 
         try:
-            # Находим записи для обновления
             to_update = self.database.select_records(self.current_table, **filters)
 
             if not to_update:
@@ -192,7 +189,6 @@ class TUI:
                 print("Обновление отменено.")
                 return
 
-            # Новые значения
             print("\n--- Новые значения ---")
             print("(Оставьте поле пустым, если не хотите его менять)")
 
@@ -217,21 +213,20 @@ class TUI:
                 print("Ошибка: нужно указать хотя бы одно поле для обновления.")
                 return
 
-            # Обновляем записи
-            table = self.database._load_table(self.current_table)
-            updated_records = []
-            for record in to_update:
-                for key, value in updates.items():
-                    if key in record:
-                        record[key] = value
-                updated_records.append(record)
-            self.database._save_table(self.current_table, table)
+            updated_records = self.database.update_records(
+                self.current_table,
+                filters,
+                updates
+            )
 
-            print("\nОбновленные записи:")
+            print(f"\nОбновлено записей: {len(updated_records)}")
             self._print_records(updated_records)
 
         except (TableNotFoundError, UnknownColumnError) as e:
             print(f"Ошибка: {e}")
+        except ValueError as e:
+            print(f"Ошибка: {e}")
+
 
     def _delete_students_by_filter(self) -> None:
         """Удаление студентов по фильтру."""
@@ -276,15 +271,14 @@ class TUI:
                 print("Удаление отменено.")
                 return
 
-            # Удаляем записи
-            table = self.database._load_table(self.current_table)
-            table.records = [
-                r for r in table.records
-                if not all(r.get(k) == v for k, v in filters.items())
-            ]
-            self.database._save_table(self.current_table, table)
+            # Используем публичный метод delete_records
+            deleted_records = self.database.delete_records(
+                self.current_table,
+                filters
+            )
 
-            print(f"\n✅ Удалено записей: {len(to_delete)}")
+            print(f"\nУдалено записей: {len(deleted_records)}")
+            self._print_records(deleted_records)
             self._print_records(to_delete)
 
         except (TableNotFoundError, UnknownColumnError) as e:

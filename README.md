@@ -14,7 +14,7 @@ Python
 
 
 
-Запуск: python -m
+Запуск: python -m src.db
 
 Проверка тестов: pytest --cov=src --cov-report=term-missing
 
