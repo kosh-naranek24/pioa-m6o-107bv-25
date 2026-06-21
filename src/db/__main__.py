@@ -1,3 +1,4 @@
+#__main__.py
 from src.db.tui import run
 
 
