@@ -310,7 +310,7 @@ class TUI:
 def run() -> None:
     """Точка входа для TUI."""
     app = TUI()
-
+    app.run()
 
 if __name__ == "__main__":
     run()

@@ -1,18 +1,15 @@
 # src/db/backend/file.py
 import json
 from pathlib import Path
+from typing import Union
 
 from .database import Database
 from .errors import InvalidStorageDataError, TableNotFoundError
 from .table import Table
 
-
 class FileDatabase(Database):
-
-
     def __init__(self, directory: str = "data") -> None:
-        project_root = Path(__file__).parent.parent.parent.parent
-        self.directory = project_root / directory
+        self.directory = Path(directory)
         self.directory.mkdir(parents=True, exist_ok=True)
 
     def _table_exists(self, table_name: str) -> bool:

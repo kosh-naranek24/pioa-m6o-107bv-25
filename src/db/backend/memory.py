@@ -1,5 +1,4 @@
 # src/db/backend/memory.py
-from typing import Any
 
 from .database import Database
 from .errors import TableNotFoundError
